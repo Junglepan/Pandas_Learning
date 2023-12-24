@@ -79,7 +79,7 @@ for i in range(len(date_range1)):
     list_temp = [date.strftime('%Y/%m'), ac_number, huoyue_number, ac_sum, huoyue_ratio]
     df_list.append(list_temp)
     df_activity = pd.DataFrame(df_list, columns=['日期(月)', '参与学生人数', '活跃人数', '学习活动总数', '学生活跃率'])
-print(df_activity)
+    print(df_activity)
 
 # 区分不同的行为：学习行为和缺席
 # dict_activit = {'获得考试成绩':1,'参与签到':2,'学生访问章节':3,'完成任务点':4,
@@ -101,6 +101,80 @@ print(df_activity)
 # print(df_activity.shape)
 
 
-index = ['参与学生人数', '活跃人数', '学习活动总数', '学生活跃率']
-for date in range(len(date_range1)):
-    temp = df_dropTeacher[df_dropTeacher['时间'] < date_range1[0]]
+
+
+""" 统计每个班级的学生学习情况"""
+list_new = []
+for name1, info in df_dropTeacher.groupby('班级名'):
+    #     print(name)
+
+    # 班级
+
+    # 每个月的活动次数
+
+    for i in range(len(date_range1)):
+        if (i == 0):
+            df_M = info[info['时间'] < date_range1[i]]
+        else:
+            df_M = info[(info['时间'] < date_range1[i]) & (info['时间'] > date_range1[i - 1])]
+        #         print(df_M)
+
+        #   日期
+        list_cl = []
+        list_cl.append(name1)
+        list_cl.append(date_range1[i].strftime('%Y/%m'))
+        jiaohu_person = df_M['姓名'].nunique()
+        jiaohu_count = df_M.shape[0]
+        ave_jiaohu = (int)(jiaohu_count / jiaohu_person)
+        huoyue_person = 0;
+        for name2, info1 in df_M.groupby('姓名'):
+            if (info1['事件类型'].count() > ave_jiaohu):
+                huoyue_person = huoyue_person + 1
+        # 活跃人数
+        # 活跃率
+        list_cl.append(jiaohu_person)
+        list_cl.append(format(huoyue_person / jiaohu_person, '.2f'))
+        list_cl.append(df_M.shape[0])
+        print(list_cl)
+        list_new.append(list_cl)
+df_new = pd.DataFrame(list_new, columns=['班级', '日期', '活跃人数', '活跃率', '总活动次数'])
+df_new
+
+
+
+"""班级的统计数据"""
+list_new = []
+for name1, info in df_dropTeacher.groupby('班级名'):
+    #     print(name)
+
+    # 班级
+
+    # 每个月的活动次数
+
+    for i in range(len(date_range1)):
+        if (i == 0):
+            df_M = info[info['时间'] < date_range1[i]]
+        else:
+            df_M = info[(info['时间'] < date_range1[i]) & (info['时间'] > date_range1[i - 1])]
+        #         print(df_M)
+
+        #   日期
+        list_cl = []
+        list_cl.append(name1)
+        list_cl.append(date_range1[i].strftime('%Y/%m'))
+        jiaohu_person = df_M['姓名'].nunique()
+        jiaohu_count = df_M.shape[0]
+        ave_jiaohu = (int)(jiaohu_count / jiaohu_person)
+        huoyue_person = 0;
+        for name2, info1 in df_M.groupby('姓名'):
+            if (info1['事件类型'].count() > ave_jiaohu):
+                huoyue_person = huoyue_person + 1
+        # 活跃人数
+        # 活跃率
+        list_cl.append(jiaohu_person)
+        list_cl.append(format(huoyue_person / jiaohu_person, '.2f'))
+        list_cl.append(df_M.shape[0])
+        print(list_cl)
+        list_new.append(list_cl)
+df_new = pd.DataFrame(list_new, columns=['班级', '日期', '活跃人数', '活跃率', '总活动次数'])
+df_new
