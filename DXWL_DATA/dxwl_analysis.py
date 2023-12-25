@@ -1,6 +1,31 @@
 import pandas as pd
 
 
+# 区分不同的行为：学习行为和缺席
+# dict_activit = {'获得考试成绩':1,'参与签到':2,'学生访问章节':3,'完成任务点':4,
+#                 '批阅互评作业':5,'提交作业':6,'提交考试':7,
+#                 '讨论':8,'选人被选中':9,'获得作业成绩':10,}
+# activit_list = list(dict_activit.keys())
+#
+# dict_absence = {'病假':1,'签到已过期':2,'缺勤':3,'公假':4,'事假':5}
+# absence_list = list(dict_absence.keys())
+#
+# df_activity = df_dropTeacher[(df_dropTeacher['事件类型'] != '病假') &
+#     (df_dropTeacher['事件类型'] != '签到已过期') &
+#     (df_dropTeacher['事件类型'] != '缺勤') &
+#     (df_dropTeacher['事件类型'] != '公假') &
+#     (df_dropTeacher['事件类型'] != '事假') ]
+# # print(list(df_activity.groupby('事件类型')))
+
+# print(df_dropTeacher.shape)
+# print(df_activity.shape)
+
+
+
+
+
+
+
 """*****************每月的总活动统计********************"""
 df = pd.read_csv('dxwl.csv')
 # print(df.head())
@@ -116,7 +141,7 @@ print(start_time)
 print(end_time)
 
 # 每个月的时间序列
-date_range1 = pd.date_range(start=tart_time, end=end_time, freq="M")
+date_range1 = pd.date_range(start=start_time, end=end_time, freq="M")
 print(date_range1)
 
 # df的时间格式转换
