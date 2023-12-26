@@ -246,8 +246,8 @@ new_df_month = df_month.iloc[:, :13]
 ab_sum = abscense.sum(axis=1)
 # print(ab_sum)
 new_df_month.insert(13, '缺席', ab_sum)
-# new_df_week
-new_df_month.to_csv('stu_behavior')
+new_df_week
+# new_df_month.to_csv('stu_behavior')
 
 
 """输出Json"""
