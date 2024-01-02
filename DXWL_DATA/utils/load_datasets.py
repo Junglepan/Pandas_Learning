@@ -1,7 +1,7 @@
 import numpy as np
 import torch.utils.data
-from load_dataset import  TensorDataset
-file_path = './dxwl_dataset/'
+from dataset import TensorDataset
+file_path = '../dxwl_dataset/'
 
 def load_data(file_name):
     X_train = np.load(file_name + "X_train.npy")
@@ -18,9 +18,10 @@ def load_label(file_name):
 
 a,b,c = load_label(file_path)
 x,y,z = load_data(file_path)
-# print(a)
-# print(x)
+# print(a.shape)
+# print(x.shape)
+
 
 X_train = torch.utils.data.DataLoader(TensorDataset(x,a),shuffle=False)
-print(X_train)
+print(type(X_train))
 print(X_train.dataset)
