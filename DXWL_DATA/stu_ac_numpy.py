@@ -110,4 +110,4 @@ print(behavior_list.shape)
 # print((behavior_list.shape[0]))
 # print(z_score_normalized_np.reshape((behavior_list.shape[0], -1)).shape)
 print(behavior_list)
-np.save('behavior_array.npy', behavior_list)        # 保存在数据npy中
+np.save('dxwl_dataset/behavior_array.npy', behavior_list)        # 保存在数据npy中
