@@ -86,7 +86,7 @@ def load_dataset(file_path):
     train_dataset = torch.utils.data.TensorDataset(X_train, y_train, train_seq_lens)
     test_dataset = torch.utils.data.TensorDataset(X_test,y_test, test_seq_lens)
     val_dataset = torch.utils.data.TensorDataset(X_val,y_val, val_seq_lens)
-    return train_dataset,test_dataset,val_dataset
+    return train_dataset,val_dataset,test_dataset
 
 
 def validation(model, testloader, criterion, device='cpu'):

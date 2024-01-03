@@ -13,7 +13,7 @@ def main():
     load_data_npy(file_path_name,dataset)
 
     path = "../"+dataset+"/"
-    train_dataset, test_dataset, val_dataset = load_dataset(file_path=path)
+    train_dataset, val_dataset,_= load_dataset(file_path=path)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size)
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=args.batch_size)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
