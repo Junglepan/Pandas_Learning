@@ -1,17 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from utils import load_dataset,train,load_data_npy
+from utils import load_dataset,train
 from model import MLSTMfcn
 from constants import NUM_CLASSES, MAX_SEQ_LEN, NUM_FEATURES
 
 def main():
     dataset = args.dataset
-    file_path_name = args.file_path_npy
     assert dataset in NUM_CLASSES.keys()
-
-    load_data_npy(file_path_name,dataset)
-
     path = "../"+dataset+"/"
     train_dataset, val_dataset,_= load_dataset(file_path=path)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size)
@@ -39,7 +35,6 @@ if __name__ == "__main__":
     p.add_argument("--batch_size", type=int, default=100)
     p.add_argument("--learning_rate", type=float, default=0.01)
     p.add_argument("--name", type=str, default="model_mlstm_fcn")
-    p.add_argument("--dataset", type=str, default='dxwl_dataset')
-    p.add_argument("--file_path_npy",type=str,default='behavior_array')
+    p.add_argument("--dataset", type=str, default='daily_sport')
     args = p.parse_args()
     main()
