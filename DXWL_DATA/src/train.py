@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from utils import load_dataset,train
-from model import MLSTMfcn
+from MLSTM_FCN_model import MLSTMfcn
+from BiLSTM_modified_model import BiAMLSTMfcn
 from constants import NUM_CLASSES, MAX_SEQ_LEN, NUM_FEATURES
 
 def main():
@@ -15,8 +16,16 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print("Device: {}".format(device))
 
-    mlstm_fcn_model = MLSTMfcn(num_classes=NUM_CLASSES[dataset], 
-                               max_seq_len=MAX_SEQ_LEN[dataset], 
+
+    # mlstm_fcn_model = MLSTMfcn(num_classes=NUM_CLASSES[dataset],
+    #                            max_seq_len=MAX_SEQ_LEN[dataset],
+    #                            num_features=NUM_FEATURES[dataset])
+    # mlstm_fcn_model.to(device)
+
+
+    # 使用BiLSTM-FCN模型
+    mlstm_fcn_model = BiAMLSTMfcn(num_classes=NUM_CLASSES[dataset],
+                               max_seq_len=MAX_SEQ_LEN[dataset],
                                num_features=NUM_FEATURES[dataset])
     mlstm_fcn_model.to(device)
 

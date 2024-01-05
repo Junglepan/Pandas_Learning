@@ -73,9 +73,18 @@ def train(model, trainloader, validloader, criterion, optimizer,
     valid_loss_min = np.Inf  # track change in validation loss
     steps = 0
 
+    train_accuracies = []
+    train_losses = []
+    val_losses = []
+    val_accuracies = []
+
     for e in range(epochs):
         train_loss = 0.0
         valid_loss = 0.0
+
+        train_acc_temp = 0
+
+
 
         model.train()
         for inputs, labels, seq_lens in trainloader:
@@ -83,26 +92,42 @@ def train(model, trainloader, validloader, criterion, optimizer,
 
             inputs = inputs.float()
             inputs, labels = inputs.to(device), labels.to(device)
-
             optimizer.zero_grad()
 
             output = model.forward(inputs, seq_lens)
             loss = criterion(output, labels)
             loss.backward()
             optimizer.step()
-
             train_loss += loss.item()
+
+            # 统计分类正确的数目
+            ps = torch.exp(output)
+            equality = (labels.data == ps.max(1)[1])
+            train_acc_temp += equality.type_as(torch.FloatTensor()).mean()
+
 
             if steps % print_every == 0:
                 model.eval()
-
                 with torch.no_grad():
                     valid_loss, accuracy = validation(model, validloader, criterion, device)
+
 
                 print("Epoch: {}/{}.. ".format(e + 1, epochs),
                       "Training Loss: {:.6f}.. ".format(train_loss / print_every),
                       "Val Loss: {:.6f}.. ".format(valid_loss / len(validloader)),
                       "Val Accuracy: {:.2f}%".format(accuracy / len(validloader) * 100))
+
+                # 统计指标
+                train_accuracy = train_acc_temp / print_every
+                avg_train_loss = train_loss / print_every
+                val_accuracy = accuracy / len(validloader)
+                val_loss = valid_loss / len(validloader)
+
+
+                train_accuracies.append(train_accuracy)
+                train_losses.append(avg_train_loss)
+                val_losses.append(val_loss)
+                val_accuracies.append(val_accuracy)
 
                 # save model if validation loss has decreased
                 if valid_loss <= valid_loss_min:
@@ -114,9 +139,28 @@ def train(model, trainloader, validloader, criterion, optimizer,
                     valid_loss_min = valid_loss
 
                 train_loss = 0
+                train_acc_temp = 0;
 
                 model.train()
+# 绘制训练损失和验证损失的图表
+    plt.figure(figsize=(10, 5))
+    plt.plot(train_losses, label='Train Loss')
+    plt.plot(val_losses, label='Validation Loss')
+    plt.title('Training and Validation Loss over ten batches')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
 
+    # 绘制训练精度和验证精度的图表
+    plt.figure(figsize=(10, 5))
+    plt.plot(train_accuracies, label='Train Accuracy')
+    plt.plot(val_accuracies, label='Validation Accuracy')
+    plt.title('Validation Accuracy over ten batches')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.legend()
+    plt.show()
 
 
 

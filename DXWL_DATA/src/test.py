@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from model import MLSTMfcn
+from MLSTM_FCN_model import MLSTMfcn
 from utils import validation, load_dataset
 from constants import NUM_CLASSES, MAX_SEQ_LEN, NUM_FEATURES
 
