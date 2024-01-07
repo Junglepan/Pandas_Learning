@@ -19,8 +19,9 @@ class AttentionModule(nn.Module):
         attention_weights = F.softmax(attention_weights, dim=-1)
 
         attended_values = torch.matmul(attention_weights, value)
-        output = torch.sum(attended_values, dim=-2)
-
+        # output = torch.sum(attended_values, dim=1)
+        output = attended_values
+        # output = torch.cat([attended_values] * attended_values.size(1), dim=1)
         return output
 
 
@@ -103,7 +104,7 @@ class BiAMLSTMfcn(nn.Module):
         x1 = x1[:, -1, :]  # Take the output of the last time step
 
         # # Attention
-        # x1 = self.attention(x1)
+        x1 = self.attention(x1)
 
         # Convolutional Layers
         x2 = x.transpose(2, 1)
