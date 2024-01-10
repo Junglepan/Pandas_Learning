@@ -17,17 +17,17 @@ def main():
     print("Device: {}".format(device))
 
 
-    # mlstm_fcn_model = MLSTMfcn(num_classes=NUM_CLASSES[dataset],
-    #                            max_seq_len=MAX_SEQ_LEN[dataset],
-    #                            num_features=NUM_FEATURES[dataset])
-    # mlstm_fcn_model.to(device)
-
-
-    # 使用BiLSTM-FCN模型
-    mlstm_fcn_model = BiAMLSTMfcn(num_classes=NUM_CLASSES[dataset],
+    mlstm_fcn_model = MLSTMfcn(num_classes=NUM_CLASSES[dataset],
                                max_seq_len=MAX_SEQ_LEN[dataset],
                                num_features=NUM_FEATURES[dataset])
     mlstm_fcn_model.to(device)
+
+
+    # # 使用BiMLSTM-FCN模型
+    # mlstm_fcn_model = BiAMLSTMfcn(num_classes=NUM_CLASSES[dataset],
+    #                            max_seq_len=MAX_SEQ_LEN[dataset],
+    #                            num_features=NUM_FEATURES[dataset])
+    # mlstm_fcn_model.to(device)
 
     optimizer = optim.SGD(mlstm_fcn_model.parameters(), lr=args.learning_rate, momentum=0.9)
     criterion = nn.NLLLoss()

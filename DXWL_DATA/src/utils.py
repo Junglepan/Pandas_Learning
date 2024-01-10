@@ -78,13 +78,10 @@ def train(model, trainloader, validloader, criterion, optimizer,
     val_losses = []
     val_accuracies = []
 
+    train_loss = 0.0
+    valid_loss = 0.0
+    train_acc_temp = 0
     for e in range(epochs):
-        train_loss = 0.0
-        valid_loss = 0.0
-
-        train_acc_temp = 0
-
-
 
         model.train()
         for inputs, labels, seq_lens in trainloader:
@@ -96,14 +93,17 @@ def train(model, trainloader, validloader, criterion, optimizer,
 
             output = model.forward(inputs, seq_lens)
             loss = criterion(output, labels)
-            loss.backward()
-            optimizer.step()
-            train_loss += loss.item()
 
             # 统计分类正确的数目
             ps = torch.exp(output)
             equality = (labels.data == ps.max(1)[1])
             train_acc_temp += equality.type_as(torch.FloatTensor()).mean()
+
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
+
+
 
 
             if steps % print_every == 0:
@@ -113,6 +113,7 @@ def train(model, trainloader, validloader, criterion, optimizer,
 
 
                 print("Epoch: {}/{}.. ".format(e + 1, epochs),
+                      "Training Accuracy: {:.2f}%".format(train_acc_temp / print_every * 100),
                       "Training Loss: {:.6f}.. ".format(train_loss / print_every),
                       "Val Loss: {:.6f}.. ".format(valid_loss / len(validloader)),
                       "Val Accuracy: {:.2f}%".format(accuracy / len(validloader) * 100))

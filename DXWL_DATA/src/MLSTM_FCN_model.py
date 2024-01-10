@@ -60,21 +60,29 @@ class MLSTMfcn(nn.Module):
         self.convDrop = nn.Dropout(self.fc_drop_p)
 
         self.fc = nn.Linear(self.conv3_nf+self.num_lstm_out, self.num_classes)
-    
+        # self.fc = nn.Linear(self.num_lstm_out, self.num_classes)        # 只使用MLSTM部分的预测
+        # self.fc = nn.Linear(self.conv3_nf, self.num_classes)        # 只使用FCN部分的预测
+
+
     def forward(self, x, seq_lens):
+
         ''' input x should be in size [B,T,F], where 
             B = Batch size
             T = Time samples
             F = features
         '''
-        x1 = nn.utils.rnn.pack_padded_sequence(x, seq_lens, 
-                                               batch_first=True, 
-                                               enforce_sorted=False)
-        x1, (ht,ct) = self.lstm(x1)
-        x1, _ = nn.utils.rnn.pad_packed_sequence(x1, batch_first=True, 
-                                                 padding_value=0.0)
+
+
+        # 处理时间序列长度不同的问题
+        # x1 = nn.utils.rnn.pack_padded_sequence(x, seq_lens,
+        #                                        batch_first=True,
+        #                                        enforce_sorted=False)
+        x1, _ = self.lstm(x)
+        # x1, _ = nn.utils.rnn.pad_packed_sequence(x1, batch_first=True,
+        #                                          padding_value=0.0)
         x1 = x1[:,-1,:]
-        
+
+        # FCN
         x2 = x.transpose(2,1)
         x2 = self.convDrop(self.relu(self.bn1(self.conv1(x2))))
         x2 = self.se1(x2)
@@ -82,9 +90,14 @@ class MLSTMfcn(nn.Module):
         x2 = self.se2(x2)
         x2 = self.convDrop(self.relu(self.bn3(self.conv3(x2))))
         x2 = torch.mean(x2,2)
-        
         x_all = torch.cat((x1,x2),dim=1)
+
+        # 只使用LSTM训练：
+        # x_all = x1
+
         x_out = self.fc(x_all)
         x_out = F.log_softmax(x_out, dim=1)
 
         return x_out
+
+
