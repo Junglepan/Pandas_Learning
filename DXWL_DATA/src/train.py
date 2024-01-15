@@ -3,7 +3,8 @@ import torch.nn as nn
 import torch.optim as optim
 from utils import load_dataset,train
 from MLSTM_FCN_model import MLSTMfcn
-from BiLSTM_modified_model import BiAMLSTMfcn
+from ECA_Net import ECA_LSTM_NET
+from BiLSTM_FCN_model import BiAMLSTMfcn
 from constants import NUM_CLASSES, MAX_SEQ_LEN, NUM_FEATURES
 
 def main():
@@ -17,9 +18,15 @@ def main():
     print("Device: {}".format(device))
 
 
-    mlstm_fcn_model = MLSTMfcn(num_classes=NUM_CLASSES[dataset],
-                               max_seq_len=MAX_SEQ_LEN[dataset],
-                               num_features=NUM_FEATURES[dataset])
+    # mlstm_fcn_model = MLSTMfcn(num_classes=NUM_CLASSES[dataset],
+    #                            max_seq_len=MAX_SEQ_LEN[dataset],
+    #                            num_features=NUM_FEATURES[dataset])
+
+    # 换ECA_LSTM_NET
+    mlstm_fcn_model = ECA_LSTM_NET(num_classes=NUM_CLASSES[dataset],
+                                    max_seq_len=MAX_SEQ_LEN[dataset],
+                                    num_features=NUM_FEATURES[dataset])
+
     mlstm_fcn_model.to(device)
 
 
@@ -32,9 +39,12 @@ def main():
     optimizer = optim.SGD(mlstm_fcn_model.parameters(), lr=args.learning_rate, momentum=0.9)
     criterion = nn.NLLLoss()
 
-    train(mlstm_fcn_model, train_loader, val_loader, 
-          criterion, optimizer, 
+    train(mlstm_fcn_model, train_loader, val_loader,
+          criterion, optimizer,
           epochs=args.epochs, print_every=100, device=device, run_name=args.name)
+
+
+
 
 
 if __name__ == "__main__":

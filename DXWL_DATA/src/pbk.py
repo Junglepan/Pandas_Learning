@@ -61,5 +61,16 @@ file_name = '../dxwl_dataset'
 data1 = np.load(file_name + '/X_train.npy')
 
 print(type(data1))
+print(data1.shape)
+data = torch.from_numpy(data1)
+# 使用 permute 方法来重新排列维度
+data_permuted = data.permute(0, 2, 1)
+
+# 现在，data_permuted 的形状为 (k, m, n)
+# 为了将它转换为 (k, m, 1, n)，你需要添加一个额外的维度
+data_final = data_permuted.unsqueeze(2)
+
+# 现在，data_final 的形状应该为 (k, m, 1, n)
+print(data_final.shape)
 
 
